@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hamam — Software Engineering Student</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #11151c;
+    --bg-soft: #151a23;
+    --surface: #1b2230;
+    --surface-2: #222a3a;
+    --accent: #e8a33d;
+    --accent-soft: rgba(232,163,61,0.14);
+    --teal: #5fb8a6;
+    --teal-soft: rgba(95,184,166,0.14);
+    --text: #edeef0;
+    --text-muted: #8b93a1;
+    --border: rgba(255,255,255,0.08);
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+
+  html{ scroll-behavior: smooth; }
+
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  body::before{
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(232,163,61,0.06), transparent 45%),
+      radial-gradient(circle at 85% 60%, rgba(95,184,166,0.06), transparent 45%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  a{ color: inherit; text-decoration: none; }
+  ul{ list-style: none; }
+  img{ max-width: 100%; display:block; }
+
+  .container{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 28px;
+  }
+
+  .eyebrow{
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  h1, h2, h3{
+    font-family: var(--display);
+    font-weight: 600;
+    line-height: 1.15;
+  }
+
+  /* ---------- NAV ---------- */
+  header.site-nav{
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 50;
+    background: rgba(17,21,28,0.78);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 28px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .logo{
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+  }
+  .logo span{ color: var(--accent); }
+  .nav-links{
+    display: flex;
+    gap: 32px;
+  }
+  .nav-links a{
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    position: relative;
+    transition: color 0.25s ease;
+  }
+  .nav-links a:hover{ color: var(--text); }
+  .nav-links a::after{
+    content:"";
+    position:absolute;
+    left:0; bottom:-6px;
+    width:0; height:1px;
+    background: var(--accent);
+    transition: width 0.25s ease;
+  }
+  .nav-links a:hover::after{ width: 100%; }
+
+  .nav-toggle{
+    display:none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+  }
+  .nav-toggle span{
+    width: 22px; height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 140px 0 80px;
+  }
+  .hero-tag{
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--teal);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-tag .dot{
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--teal);
+    box-shadow: 0 0 0 4px var(--teal-soft);
+  }
+  .hero h1{
+    font-size: clamp(3rem, 9vw, 6.2rem);
+    letter-spacing: -0.02em;
+  }
+  .hero .role{
+    font-family: var(--mono);
+    color: var(--text-muted);
+    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    margin-top: 18px;
+    max-width: 560px;
+  }
+  .hero .role strong{ color: var(--text); font-weight: 500; }
+
+  .hero-line{
+    margin-top: 28px;
+    font-family: var(--mono);
+    font-size: 0.92rem;
+    color: var(--accent);
+    border-left: 2px solid var(--accent);
+    padding-left: 14px;
+  }
+  .cursor{
+    display:inline-block;
+    width: 8px; height: 1.1em;
+    background: var(--accent);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink{ 50%{ opacity: 0; } }
+
+  .stack-chips{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 34px;
+  }
+  .chip{
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    padding: 7px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-muted);
+    background: var(--surface);
+  }
+
+  .hero-cta{
+    display: flex;
+    gap: 16px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+  }
+  .btn{
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    padding: 13px 26px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary{
+    background: var(--accent);
+    color: #15110a;
+    font-weight: 600;
+  }
+  .btn-primary:hover{ transform: translateY(-2px); }
+  .btn-outline{
+    border-color: var(--border);
+    color: var(--text);
+  }
+  .btn-outline:hover{ border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{
+    position: relative;
+    z-index: 1;
+    padding: 110px 0;
+    border-top: 1px solid var(--border);
+  }
+  .section-head{
+    margin-bottom: 56px;
+  }
+  .section-head h2{
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin-top: 10px;
+  }
+
+  .reveal{
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.is-visible{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 48px;
+    align-items: start;
+  }
+  .about-text p{
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    max-width: 52ch;
+  }
+  .about-text p + p{ margin-top: 16px; }
+  .about-text strong{ color: var(--text); font-weight: 600; }
+
+  .info-card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 26px;
+  }
+  .info-row{
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.92rem;
+  }
+  .info-row:last-child{ border-bottom: none; }
+  .info-row .label{
+    font-family: var(--mono);
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .info-row .value{ text-align: right; color: var(--text); }
+
+  /* ---------- JOURNEY / TIMELINE (signature) ---------- */
+  .timeline{
+    position: relative;
+    padding-left: 36px;
+  }
+  .timeline::before{
+    content:"";
+    position: absolute;
+    left: 8px; top: 6px; bottom: 6px;
+    width: 2px;
+    background: linear-gradient(var(--border), var(--border));
+  }
+  .t-node{
+    position: relative;
+    padding-bottom: 56px;
+  }
+  .t-node:last-child{ padding-bottom: 0; }
+  .t-node::before{
+    content:"";
+    position: absolute;
+    left: -36px; top: 4px;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--text-muted);
+  }
+  .t-node.is-current::before{
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 0 5px var(--accent-soft);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%, 100%{ box-shadow: 0 0 0 5px var(--accent-soft); }
+    50%{ box-shadow: 0 0 0 10px transparent; }
+  }
+  .t-date{
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .t-node.is-current .t-date{ color: var(--accent); }
+  .t-node:not(.is-current) .t-date{ color: var(--text-muted); }
+  .t-title{
+    font-family: var(--display);
+    font-size: 1.4rem;
+    margin-top: 8px;
+  }
+  .t-desc{
+    color: var(--text-muted);
+    margin-top: 8px;
+    max-width: 56ch;
+  }
+  .t-status{
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    margin-top: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .t-status.done{
+    background: var(--teal-soft);
+    color: var(--teal);
+  }
+  .t-status.active{
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .milestone{
+    margin-top: 20px;
+    padding: 16px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--teal);
+    border-radius: 0 8px 8px 0;
+    font-size: 0.92rem;
+  }
+  .milestone .m-label{
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* ---------- SKILLS ---------- */
+  .skills-grid{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+  .skill-card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px 20px;
+    transition: border-color 0.25s ease, transform 0.25s ease;
+  }
+  .skill-card:hover{
+    border-color: var(--accent);
+    transform: translateY(-4px);
+  }
+  .skill-card .sk-name{
+    font-family: var(--display);
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+  .skill-card .sk-note{
+    font-family: var(--mono);
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .sk-bar{
+    margin-top: 16px;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--surface-2);
+    overflow: hidden;
+  }
+  .sk-bar i{
+    display: block;
+    height: 100%;
+    background: var(--accent);
+    border-radius: 4px;
+  }
+
+  /* ---------- WORK ---------- */
+  .work-card{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+  }
+  .work-mock{
+    background: var(--bg-soft);
+    padding: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .browser-frame{
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+  }
+  .browser-bar{
+    display: flex;
+    gap: 6px;
+    padding: 10px 12px;
+    background: #161c27;
+    border-bottom: 1px solid var(--border);
+  }
+  .browser-bar span{
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+  .browser-body{ padding: 16px; }
+  .mock-nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .mock-logo{
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.06em;
+  }
+  .mock-links{ display:flex; gap: 8px; }
+  .mock-links span{
+    width: 28px; height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+  }
+  .mock-banner{
+    height: 64px;
+    border-radius: 6px;
+    background: linear-gradient(120deg, var(--accent-soft), var(--teal-soft));
+    margin-bottom: 14px;
+  }
+  .mock-products{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .mock-products div{
+    aspect-ratio: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  .work-info{
+    padding: 36px 32px;
+  }
+  .work-info .eyebrow{ color: var(--teal); }
+  .work-info h3{
+    font-size: 1.6rem;
+    margin-top: 10px;
+  }
+  .work-info p{
+    color: var(--text-muted);
+    margin-top: 14px;
+    font-size: 0.96rem;
+  }
+  .work-tags{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .work-tags span{
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 5px 11px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  /* ---------- CONTACT ---------- */
+  .contact-wrap{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 28px;
+  }
+  .contact-wrap h2{ font-size: clamp(2rem, 5vw, 3rem); }
+  .contact-sub{
+    color: var(--text-muted);
+    max-width: 50ch;
+  }
+  .contact-list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .contact-pill{
+    font-family: var(--mono);
+    font-size: 0.88rem;
+    padding: 13px 20px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    transition: border-color 0.25s ease, transform 0.2s ease;
+  }
+  .contact-pill:hover{
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  footer{
+    padding: 32px 0 48px;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 860px){
+    .about-grid{ grid-template-columns: 1fr; }
+    .skills-grid{ grid-template-columns: repeat(2, 1fr); }
+    .work-card{ grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 680px){
+    .nav-links{
+      position: absolute;
+      top: 100%; left: 0; right: 0;
+      flex-direction: column;
+      background: var(--bg-soft);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 28px;
+      gap: 18px;
+      display: none;
+    }
+    .nav-links.open{ display: flex; }
+    .nav-toggle{ display: flex; }
+    .skills-grid{ grid-template-columns: 1fr; }
+    section{ padding: 80px 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+    html{ scroll-behavior: auto; }
+  }
+
+  :focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-nav">
+  <div class="nav-inner">
+    <a href="#top" class="logo">HM<span>.</span></a>
+    <button class="nav-toggle" aria-label="Toggle menu" id="navToggle">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-links" id="navLinks">
+      <a href="#about">About</a>
+      <a href="#journey">Journey</a>
+      <a href="#skills">Skills</a>
+      <a href="#work">Work</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" style="border-top:none; padding-top:140px;">
+    <div class="container">
+      <div class="hero-tag"><span class="dot"></span>S/O Imran Kalam · Aptech Learning Institute</div>
+      <h1>Hamam</h1>
+      <p class="role">Currently pursuing the <strong>Advanced Diploma in Software Engineering</strong> — Semester 01, building a foundation in front-end development.</p>
+      <p class="hero-line">// one year of Accounting, now building toward Software Engineering<span class="cursor"></span></p>
+      <div class="stack-chips">
+        <span class="chip">HTML</span>
+        <span class="chip">CSS</span>
+        <span class="chip">JavaScript</span>
+        <span class="chip">Bootstrap</span>
+      </div>
+      <div class="hero-cta">
+        <a href="#work" class="btn btn-primary">View My Work</a>
+        <a href="#contact" class="btn btn-outline">Get in Touch</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Who I Am</span>
+        <h2>About Me</h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <p><strong>Hamam</strong>, S/O Imran Kalam, is a software engineering student at <strong>Aptech Learning Institute</strong>. After completing the first year of Accounting, the focus shifted toward software development — a deliberate move from numbers to code.</p>
+          <p>Now in the first semester of the <strong>Advanced Diploma in Software Engineering</strong>, the current stack covers HTML, CSS, JavaScript, and Bootstrap, applied hands-on through the <strong>Ryan Sports Club</strong> e-commerce project.</p>
+        </div>
+        <div class="info-card reveal">
+          <div class="info-row"><span class="label">Name</span><span class="value">Hamam</span></div>
+          <div class="info-row"><span class="label">Father's Name</span><span class="value">Imran Kalam</span></div>
+          <div class="info-row"><span class="label">Institute</span><span class="value">Aptech Learning Institute</span></div>
+          <div class="info-row"><span class="label">Program</span><span class="value">Advanced Diploma — Software Engineering</span></div>
+          <div class="info-row"><span class="label">Status</span><span class="value">Semester 01, In Progress</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JOURNEY (signature timeline) -->
+  <section id="journey">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">The Path So Far</span>
+        <h2>My Journey</h2>
+      </div>
+      <div class="timeline">
+
+        <div class="t-node reveal">
+          <span class="t-date">Year 01</span>
+          <h3 class="t-title">Accounting</h3>
+          <p class="t-desc">Completed the first year of Accounting — building a base in structured, detail-driven thinking before moving into software development.</p>
+          <span class="t-status done">Completed</span>
+        </div>
+
+        <div class="t-node is-current reveal">
+          <span class="t-date">Semester 01 · Now</span>
+          <h3 class="t-title">Advanced Diploma in Software Engineering</h3>
+          <p class="t-desc">Enrolled at Aptech Learning Institute, currently in the first semester — learning HTML, CSS, JavaScript, and Bootstrap to build real, responsive web interfaces.</p>
+          <span class="t-status active">In Progress</span>
+
+          <div class="milestone">
+            <span class="m-label">Project Milestone</span>
+            Built <strong>Ryan Sports Club</strong> — an e-commerce web project applying HTML, CSS, JavaScript, and Bootstrap fundamentals.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Current Toolkit</span>
+        <h2>Skills</h2>
+      </div>
+      <div class="skills-grid">
+        <div class="skill-card reveal">
+          <div class="sk-name">HTML5</div>
+          <div class="sk-note">structure &amp; semantics</div>
+          <div class="sk-bar"><i style="width:70%"></i></div>
+        </div>
+        <div class="skill-card reveal">
+          <div class="sk-name">CSS3</div>
+          <div class="sk-note">layout &amp; styling</div>
+          <div class="sk-bar"><i style="width:65%"></i></div>
+        </div>
+        <div class="skill-card reveal">
+          <div class="sk-name">JavaScript</div>
+          <div class="sk-note">core fundamentals</div>
+          <div class="sk-bar"><i style="width:50%"></i></div>
+        </div>
+        <div class="skill-card reveal">
+          <div class="sk-name">Bootstrap</div>
+          <div class="sk-note">responsive components</div>
+          <div class="sk-bar"><i style="width:60%"></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section id="work">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Featured Project</span>
+        <h2>Ryan Sports Club</h2>
+      </div>
+
+      <div class="work-card reveal">
+        <div class="work-mock">
+          <div class="browser-frame">
+            <div class="browser-bar"><span></span><span></span><span></span></div>
+            <div class="browser-body">
+              <div class="mock-nav">
+                <span class="mock-logo">RYAN SPORTS CLUB</span>
+                <div class="mock-links"><span></span><span></span><span></span></div>
+              </div>
+              <div class="mock-banner"></div>
+              <div class="mock-products">
+                <div></div><div></div><div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="work-info">
+          <span class="eyebrow">E-Commerce · Aptech Coursework</span>
+          <h3>Ryan Sports Club</h3>
+          <p>An e-commerce web project built during the first semester at Aptech Learning Institute — a sports merchandise store concept, applying HTML, CSS, JavaScript, and Bootstrap to structure a responsive layout, a product grid, and core store navigation.</p>
+          <div class="work-tags">
+            <span>Responsive Layout</span>
+            <span>Bootstrap Components</span>
+            <span>Product Grid</span>
+            <span>E-commerce Concept</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-wrap reveal">
+        <span class="eyebrow">Get In Touch</span>
+        <h2>Let's Connect</h2>
+        <p class="contact-sub">Open to internships, junior roles, and collaboration as the journey into Software Engineering continues.</p>
+        <div class="contact-list">
+          <!-- Replace the placeholders below with real details -->
+          <a class="contact-pill" href="mailto:[email protected]">[email protected]</a>
+          <a class="contact-pill" href="tel:+92XXXXXXXXXX">+92 XXX XXXXXXX</a>
+          <a class="contact-pill" href="#">LinkedIn</a>
+          <a class="contact-pill" href="#">GitHub</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  &copy; <span id="year"></span> Hamam — Software Engineering Student, Aptech Learning Institute
+</footer>
+
+<script>
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => navLinks.classList.remove('open'));
+  });
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting){
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // Footer year
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
